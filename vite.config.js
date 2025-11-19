@@ -16,7 +16,7 @@ export default defineConfig({
     },
   },
   server: {
-    host: '10.128.158.61', // sizning lokal IP manzilingiz
+    host: '10.227.23.61', // sizning lokal IP manzilingiz
     port: 5173,            // standart Vite porti
   },
 })
