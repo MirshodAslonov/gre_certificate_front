@@ -13,19 +13,30 @@
     </div>
 
     <!-- Asosiy karta -->
-    <div
-      class="relative z-50 bg-white/70 backdrop-blur-2xl border border-white/40 shadow-2xl rounded-3xl p-10 w-full max-w-lg text-center transition-all duration-700 animate-fadeInUp"
-    >
+  <div class="relative z-100 bg-white/70 backdrop-blur-2xl border border-white/40 shadow-2xl rounded-3xl p-8  max-w-[600px] text-center">
+
       <!-- Plastik karta rasmi -->
-      <div class="relative mb-6">
-        <img
-          src="/card.png"
-          alt="CARD"
-          class="mx-auto w-100 h-auto drop-shadow-xl rounded-2xl"
-        />
-      </div>
+     <div class="relative mb-6 flex justify-center">
+  <img
+    src="/card1.png"
+    alt="CARD"
+    class="w-full max-w-[700px] mx-auto rounded-2xl"
+  />
+</div>
+      
  <!-- To‘lov tizimlari -->
       <div class="flex justify-center space-x-6 mb-6">
+
+        <div class="flex flex-col items-center">
+          <button
+            @click="openClick"
+            class="w-8 h-8 rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-transform"
+          >
+            <img src="/click1.png" alt="Click" class="w-8 h-8 rounded-xl" />
+          </button>
+          <span class="mt-1 text-xs text-gray-800">Click</span>
+        </div>
+
         <div class="flex flex-col items-center">
           <button
             @click="openAlif"
@@ -45,6 +56,7 @@
           </button>
           <span class="mt-1 text-xs text-gray-800">Xazna</span>
         </div>
+
       </div>
       <!-- Paketlar -->
      <div class="grid grid-cols-1 gap-6 mb-8">
@@ -174,14 +186,21 @@ const selectPremium = () => {
 // To‘lov tizimlari
 const openXazna = () => {
   window.open(
-    "https://pay.xazna.uz/p2p/42b33128-5f93-452b-82ce-b8d2da1c35c2",
+    "https://pay.xazna.uz/p2p/d735952a-e5ec-4fd5-afca-0df26fa2e6aa",
+    "_blank"
+  );
+};
+
+const openClick = () => {
+  window.open(
+    "https://my.click.uz/clickp2p/AAACA4B98A7C9BFDFA3DDF2499DA7AEC20433A73A49288ABFD9AC4253D65AA49",
     "_blank"
   );
 };
 
 const openAlif = () => {
   window.open(
-    "https://alif.go.link/toCard?cardId=uz_Yoc2Oyd-p&adj_t=1qd6bic4",
+    "https://alif.go.link/toCard?cardId=uz_63zHxVHnM&adj_t=1qd6bic4",
     "_blank"
   );
 };
