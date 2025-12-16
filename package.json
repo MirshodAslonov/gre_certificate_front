@@ -12,18 +12,23 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@heroicons/vue": "^2.2.0",
     "axios": "^1.13.0",
+    "chart.js": "^4.5.1",
+    "chartjs-plugin-datalabels": "^2.2.0",
     "dayjs": "^1.11.19",
     "lucide-vue-next": "^0.552.0",
     "vue": "^3.5.22",
+    "vue-chartjs": "^5.3.3",
     "vue-router": "^4.6.3"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^6.0.1",
-    "autoprefixer": "^10.4.21",
+    "autoprefixer": "^10.4.22",
     "postcss": "^8.5.6",
-    "tailwindcss": "^3.4.13",
-    "vite": "^7.1.12",
+    "prettier": "^3.7.4",
+    "tailwindcss": "^3.4.18",
+    "vite": "^7.2.4",
     "vite-plugin-vue-devtools": "^8.0.3"
   }
 }

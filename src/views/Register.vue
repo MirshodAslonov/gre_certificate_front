@@ -90,13 +90,13 @@ onMounted(async () => {
   }
 
   try {
-    const { data } = await axios.get('/api/user/auth/get', {
+    const { data } = await axios.get('/api/parent/auth/get', {
       headers: { Authorization: `Bearer ${token.value}` }
     })
 
     // Agar foydalanuvchi allaqachon ismga ega bo‘lsa → home ga o‘t
     if (data.first_name) {
-      router.push({ name: 'home', query: { token: token.value } })
+      router.push({ name: 'welcome', query: { token: token.value } })
     }
   } catch {
     message.value = '❌ Maʼlumot olishda xatolik.'
@@ -113,7 +113,7 @@ const submitForm = async () => {
   message.value = ''
 
   try {
-    await axios.put('/api/user/update', {
+    await axios.put('/api/parent/update', {
       first_name: firstName.value,
       last_name: lastName.value,
       phone: phone.value
@@ -122,7 +122,7 @@ const submitForm = async () => {
     })
 
     message.value = '✅ Maʼlumotlar yangilandi!'
-    setTimeout(() => router.push({ name: 'home', query: { token: token.value } }), 1000)
+    setTimeout(() => router.push({ name: 'welcome', query: { token: token.value } }), 1000)
   } catch {
     message.value = '❌ Xatolik yuz berdi.'
   } finally {
