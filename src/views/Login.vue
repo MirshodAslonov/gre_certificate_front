@@ -50,7 +50,7 @@
               v-model="phone"
               @input="formatPhone"
               maxlength="12"
-              placeholder="+998..."
+              placeholder="998..."
               class="w-full pl-5 px-4 py-3 rounded-xl bg-gray-100 focus:bg-white 
               border border-transparent focus:border-indigo-500 focus:ring-4 
               focus:ring-indigo-200 outline-none transition-all"
@@ -98,6 +98,24 @@
           Kirish
         </button>
         <!-- Footer -->
+         <!-- Register link -->
+          <div class="mt-6 text-center">
+            <span class="text-gray-500 text-sm">
+              Hisobingiz yo‘qmi?
+            </span>
+            <button
+              type="button"
+              @click="goToRegister"
+              class="ml-2 font-semibold text-indigo-600 hover:text-purple-600
+                    transition-all relative group"
+            >
+              Ro‘yxatdan o‘tish
+              <span
+                class="absolute left-0 -bottom-1 w-0 h-[2px] bg-gradient-to-r
+                      from-indigo-500 to-purple-500 transition-all group-hover:w-full">
+              </span>
+            </button>
+          </div>
 <div class="mt-10 text-center text-gray-500 text-sm opacity-70">
   <span class="font-semibold bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 animate-gradient-x">
     © {{ new Date().getFullYear() }} Aslonov — Barcha huquqlar himoyalangan.

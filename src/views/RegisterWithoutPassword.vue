@@ -9,7 +9,7 @@
     <!-- Forma card -->
     <div class="relative backdrop-blur-xl bg-white/40 border border-white/30 shadow-2xl rounded-3xl w-full max-w-md p-10 text-center space-y-6 transition-all duration-500 hover:scale-[1.01]">
       <h2 class="text-4xl font-extrabold tracking-tight bg-gradient-to-r from-indigo-600 to-blue-500 bg-clip-text text-transparent">
-         Ro‘yxatdan o‘tish
+         Biz bilan bog'lanish
       </h2>
 
       <!-- Xabar -->
@@ -53,29 +53,6 @@
           />
         </div>
 
-        <div class="text-left">
-          <label class="block text-sm mb-1 font-medium text-gray-700">Parol</label>
-          <input
-            v-model="password"
-            type="text"
-            placeholder="0000"
-            class="w-full rounded-xl border border-gray-300/60 bg-white/70 shadow-sm p-3
-                  focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 outline-none"
-          />
-        </div>
-
-        <div class="text-left">
-          <label class="block text-sm mb-1 font-medium text-gray-700">Parolni tasdiqlang</label>
-          <input
-            v-model="passwordConfirm"
-            type="text"
-            placeholder="0000"
-            class="w-full rounded-xl border border-gray-300/60 bg-white/70 shadow-sm p-3
-                  focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 outline-none"
-          />
-        </div>
-
-
         <!-- Tugma -->
         <button
           type="submit"
@@ -114,13 +91,8 @@ onMounted(() => {
 })
 
 const submitForm = async () => {
-  if (!firstName.value || !lastName.value || !phone.value || !password.value || !passwordConfirm.value) {
+  if (!firstName.value || !lastName.value || !phone.value) {
     message.value = '❗ Barcha maydonlarni to‘ldiring.'
-    return
-  }
-
-  if (password.value !== passwordConfirm.value) {
-    message.value = '❌ Parollar mos kelmadi.'
     return
   }
 
@@ -128,11 +100,10 @@ const submitForm = async () => {
   message.value = ''
 
   try {
-    const { data } = await axios.post('/api/user/register/parent', {
+    const { data } = await axios.post('/api/user/register/parent/without_password', {
       first_name: firstName.value,
       last_name: lastName.value,
-       phone: normalizePhone(phone.value),
-      password: password.value
+      phone: normalizePhone(phone.value),
     })
 
     // agar backend token qaytarsa

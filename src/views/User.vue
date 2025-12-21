@@ -24,12 +24,64 @@
       <h1 class="text-2xl text-center font-bold text-gray-800">{{ user.first_name }} {{ user.last_name }}</h1>
       <p class="text-gray-600 text-center text-sm mb-3">{{ user.phone }}</p>
 
-      <!-- ROLE -->
-      <div class="text-center">
-      <span class="inline-block bg-gradient-to-r from-amber-400 via-orange-400 to-red-500 text-white px-4 py-1 rounded-full shadow mb-6">
-        {{ user.role?.name }}
-      </span>
-    </div>
+    
+      <!-- ROLE + RANK EDIT -->
+    <div class="relative  text-center mb-6 items-center">
+
+  <!-- RANK BADGE -->
+  <div
+    class="relative inline-flex items-center
+           bg-gradient-to-r from-amber-400 via-orange-400 to-red-500
+           text-white px-5 py-1.5 rounded-full shadow group"
+  >
+
+    <!-- Rank nomi -->
+    <span class="font-medium">
+      {{ user.rank?.name || user.role?.name }}
+    </span>
+
+    <!-- ✏️ Edit qalamcha -->
+    <button
+      @click="toggleRankSelect"
+      class="absolute -top-1 -right-1
+             w-6 h-6 rounded-full
+             bg-white text-gray-600
+             shadow-md
+             flex items-center justify-center
+             text-xs
+             opacity-0 group-hover:opacity-100
+             transition"
+      title="Rank tahrirlash"
+    >
+      ✏️
+    </button>
+  </div>
+
+  <!-- SELECT -->
+  <div
+    v-if="showRankSelect"
+    class="absolute left-1/2 -translate-x-1/2 mt-3
+           w-48 bg-white rounded-xl shadow-xl border p-2 z-50"
+  >
+    <select
+      v-model="selectedRank"
+      @change="updateUserRank"
+      class="w-full border rounded-lg px-3 py-2 text-sm
+             focus:ring-2 focus:ring-indigo-500"
+    >
+      <option disabled value="">Rank tanlang</option>
+      <option
+        v-for="r in ranks"
+        :key="r.id"
+        :value="r.id"
+      >
+        {{ r.name }}
+      </option>
+    </select>
+  </div>
+
+</div>
+
 
       <!-- ACTIONS -->
       <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-6">
@@ -146,6 +198,10 @@ const openHistory = ref(false)
 const subscriptions = ref([])
 const authuser = ref({})
 
+const ranks = ref([])
+const showRankSelect = ref(false)
+const selectedRank = ref("")
+
 const fetchSubscriptions = async () => {
   try {
     const { data } = await axios.get(`/api/admin/subscribe/list/${id}`, {
@@ -164,6 +220,56 @@ const fetchAuthUser = async () => {
     authuser.value = data
   } catch (error) {
     console.error("❌ Auth userni olishda xatolik:", error)
+  }
+}
+const fetchRanks = async () => {
+  try {
+    const { data } = await axios.post("api/admin/rank/list",
+    {},
+    {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+    ranks.value = data
+  } catch (e) {
+    console.error("❌ Ranklarni olishda xatolik", e)
+  }
+}
+const toggleRankSelect = async () => {
+  showRankSelect.value = !showRankSelect.value
+
+  if (showRankSelect.value && !ranks.value.length) {
+    await fetchRanks()
+  }
+
+  selectedRank.value = user.value.rank_id || ""
+}
+const updateUserRank = async () => {
+  if (!selectedRank.value) return
+
+  try {
+    const { data } = await axios.put(
+      "api/admin/user/update",
+      {
+        id: user.value.id,
+        rank_id: selectedRank.value
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json"
+        }
+      }
+    )
+
+    // UI yangilash
+    await loadUser()
+
+    showRankSelect.value = false
+
+    console.log("✅ Rank yangilandi", data)
+
+  } catch (e) {
+    console.error("❌ Rank update xatolik", e)
   }
 }
 const openSub = ref(false)

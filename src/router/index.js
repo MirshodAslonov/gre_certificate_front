@@ -22,12 +22,14 @@ import Dashboard from '../views/Dashboard.vue';
 import UserPage from '../views/User.vue';
 import TeacherGroupAttendance from '../views/TeacherGroupAttendance.vue';
 import Attendance from '../views/Attendance.vue';
+import RegisterWithoutPassword from '../views/RegisterWithoutPassword.vue';
 const routes = [
-  { path: '/', name: 'login', component: Login },
+  { path: '/', name: 'welcome', component: Welcome },
+  { path: '/login', name: 'login', component: Login },
+  { path: '/register', name: 'register', component: Register },
+  { path: '/registerWithoutPassword', name: 'registerWithoutPassword', component: RegisterWithoutPassword },
   { path: '/home', name: 'home', component: Home },
   { path: '/admin_home', name: 'admin_home', component: AdminHome },
-  { path: '/welcome', name: 'welcome', component: Welcome },
-  { path: '/register', name: 'register', component: Register },
   { path: '/student_lesson', name: 'student_lesson', component: StudentLesson },
   { path: '/user/:id', name: 'user_page', component: UserPage , props: true },
   { path: '/teacher/group/attendance', name: 'teacher_group_attendance', component: TeacherGroupAttendance},
@@ -56,7 +58,7 @@ const router = createRouter({
 });
 
 // ⭐ Public sahifalar
-const publicPages = ['login', 'register', 'welcome'];
+const publicPages = ['login', 'register', 'welcome' , 'registerWithoutPassword'];
 
 router.beforeEach(async (to, from, next) => {
   const token = localStorage.getItem('api_token');
