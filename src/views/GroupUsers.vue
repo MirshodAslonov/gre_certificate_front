@@ -46,26 +46,39 @@
 <!-- ADD USER MODAL -->
 <div
   v-if="showAddUserModal"
-  class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 overflow-auto"
+  class="fixed inset-0 bg-black/50 z-50 flex justify-center "
+   @click.self="closeAddUserModal"
 >
-  <div class="bg-white p-6 rounded-2xl w-3/4 max-w-5xl shadow-xl relative">
-    <h3 class="text-2xl font-bold mb-4">Guruhga user qo‘shish</h3>
+    <div
+    class="bg-white rounded-2xl w-full max-w-5xl my-10 shadow-xl flex flex-col"
+    @click.stop
+  >
+      <div class="sticky top-0 bg-white z-10 px-6 py-4 border-b">
+    <h3 class="text-2xl font-bold">Guruhga user qo‘shish</h3>
+
+    <button
+      @click="closeAddUserModal"
+      class="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-xl font-bold"
+    >
+      ✖
+    </button>
+  </div>
 
     <!-- SEARCH -->
-    <div class="mb-4">
-      <input
-        v-model="userSearch"
-        @input="fetchUserList"
-        type="text"
-        placeholder="Search..."
-        class="input-field w-full"
-      />
-    </div>
+    <div class="sticky top-[72px] bg-white z-10 px-6 py-4 border-b">
+    <input
+      v-model="userSearch"
+      @input="fetchUserList"
+      type="text"
+      placeholder="Search..."
+      class="input-field w-full"
+    />
+  </div>
 
     <!-- USERS TABLE -->
-    <div class="overflow-y-auto max-h-[60vh]">
+    <div class="overflow-y-auto max-h-[60vh] px-6 ">
       <table class="min-w-full text-left border rounded-xl">
-        <thead class="bg-indigo-100">
+        <thead class="bg-indigo-200 sticky top-0 z-10">
           <tr>
             <th class="px-4 py-2">Foto</th>
             <th class="px-4 py-2">Ism</th>
@@ -129,10 +142,11 @@
       >
         <thead class="bg-indigo-100/50">
           <tr>
-            <th class="px-4 py-2 w-12">ID</th>
+            <th class="px-4 py-2 w-12">Num</th>
             <th class="px-4 py-2 w-16">Foto</th>
             <th class="px-4 py-2">Ism</th>
             <th class="px-4 py-2">Familiya</th>
+            <th class="px-4 py-2">ID</th>
             <th class="px-4 py-2">Telefon</th>
             <th class="px-4 py-2">Amallar</th>
           </tr>
@@ -140,11 +154,11 @@
 
         <tbody>
           <tr
-            v-for="item in groupUsers"
+            v-for="(item, index) in sortedGroupUsers"
             :key="item.id"
             class="border-b hover:bg-indigo-50/40 transition"
           >
-            <td class="px-4 py-2">{{ item.user.id }}</td>
+            <td class="px-4 py-2">{{ index+1 }}</td>
 
             <td class="px-4 py-2">
               <img
@@ -163,6 +177,7 @@
 
             <td class="px-4 py-2">{{ item.user.first_name }}</td>
             <td class="px-4 py-2">{{ item.user.last_name }}</td>
+            <td class="px-4 py-2">{{ item.user.id }}</td>
             <td class="px-4 py-2">{{ item.user.phone }}</td>
 
             <td class="px-4 py-2">
@@ -245,7 +260,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted,watch } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import axios from '@/plugins/axios'
 
@@ -256,7 +271,11 @@ const group = ref({})
 const groupUsers = ref([])
 const showImageModal = ref(false)
 const selectedImage = ref('')
-
+const sortedGroupUsers = computed(() => {
+  return [...groupUsers.value].sort((a, b) => {
+    return (a.user.role_id ?? 999) - (b.user.role_id ?? 999)
+  })
+})
 // Lesson modal
 const showLessonModal = ref(false)
 const lessonForm = ref({
@@ -285,7 +304,7 @@ async function loadGroup() {
 
   group.value = data
   groupUsers.value = data.users || []
-
+ 
   lessonForm.value.week_days = data.week_days || []
  lessonForm.value.start_time = data.start_time ? data.start_time.split(':').slice(0,2).join(':') : ''
 lessonForm.value.end_time   = data.end_time   ? data.end_time.split(':').slice(0,2).join(':')   : ''
@@ -377,7 +396,8 @@ async function fetchUserList() {
   const token = localStorage.getItem('api_token')
   try {
     const { data } = await axios.post('/api/admin/user/list', {
-      search: userSearch.value || null
+      search: userSearch.value || null,
+      role_id: [ 3,2 ]
     }, {
       headers: { Authorization: `Bearer ${token}`, Accept: 'application/json' }
     })

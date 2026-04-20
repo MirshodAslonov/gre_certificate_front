@@ -70,26 +70,42 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import axios from '@/plugins/axios'
-import { useRouter } from 'vue-router'
+import { useRouter,useRoute } from 'vue-router'
 
 const router = useRouter()
+const route = useRoute()
+const urlToken = ref(null)
+
 
 const firstName = ref('')
 const lastName = ref('')
 const phone = ref('')
-const password = ref('')
-const passwordConfirm = ref('')
 
 const loading = ref(false)
 const message = ref('')
 
-onMounted(() => {
+onMounted(async () => {
   const token = localStorage.getItem('api_token')
   if (token) {
-    router.push({ name: 'home' })
+    try {
+      const res = await axios.get('/api/user/auth/get', {
+        headers: { Authorization: `Bearer ${token}` }
+      })
+      const user = res.data
+      if (user.role_id === 1) {
+        router.push({ name: 'admin_home' })
+      } else {
+        router.push({ name: 'home' })
+      }
+    } catch (error) {
+      console.error('Token invalid or expired')
+      localStorage.removeItem('api_token')
+    }
+  }
+  if (route.query.token) {
+    urlToken.value = route.query.token
   }
 })
-
 const submitForm = async () => {
   if (!firstName.value || !lastName.value || !phone.value) {
     message.value = '❗ Barcha maydonlarni to‘ldiring.'
@@ -100,13 +116,24 @@ const submitForm = async () => {
   message.value = ''
 
   try {
-    const { data } = await axios.post('/api/user/register/parent/without_password', {
+    // 🔹 body tayyorlaymiz
+    const payload = {
       first_name: firstName.value,
       last_name: lastName.value,
       phone: normalizePhone(phone.value),
-    })
+      password: '1111', // backend talab qilsa
+    }
 
-    // agar backend token qaytarsa
+    // 🔹 agar URL da token bo‘lsa → qo‘shamiz
+    if (urlToken.value) {
+      payload.token = urlToken.value
+    }
+
+    const { data } = await axios.post(
+      '/api/user/register/parent',
+      payload
+    )
+
     if (data.token) {
       localStorage.setItem('api_token', data.token)
     }
@@ -115,11 +142,13 @@ const submitForm = async () => {
     setTimeout(() => router.push({ name: 'home' }), 800)
 
   } catch (error) {
-    message.value = error.response?.data?.message || '❌ Xatolik yuz berdi.'
+    message.value =
+      error.response?.data?.message || '❌ Xatolik yuz berdi.'
   } finally {
     loading.value = false
   }
 }
+
 const normalizePhone = (value) => {
   // faqat raqamlarni qoldiramiz
   let digits = value.replace(/\D/g, '')

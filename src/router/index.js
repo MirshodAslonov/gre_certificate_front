@@ -20,9 +20,14 @@ import Lessons from '../views/Lessons.vue';
 import StudentLesson from '../views/StudentLesson.vue';
 import Dashboard from '../views/Dashboard.vue';
 import UserPage from '../views/User.vue';
+import TeachersPage from '../views/Teachers.vue';
 import TeacherGroupAttendance from '../views/TeacherGroupAttendance.vue';
 import Attendance from '../views/Attendance.vue';
+import AdminAttendance from '../views/AdminAttendance.vue';
+import ParentsPage from '../views/ParentsPage.vue';
 import RegisterWithoutPassword from '../views/RegisterWithoutPassword.vue';
+import UserDailyProblemStat from '../views/UserDailyProblemStat.vue';
+import ParentsStatusList from '../views/ParentsStatusList.vue';
 const routes = [
   { path: '/', name: 'welcome', component: Welcome },
   { path: '/login', name: 'login', component: Login },
@@ -34,6 +39,8 @@ const routes = [
   { path: '/user/:id', name: 'user_page', component: UserPage , props: true },
   { path: '/teacher/group/attendance', name: 'teacher_group_attendance', component: TeacherGroupAttendance},
   { path: '/attendance', name: 'attendance_page', component: Attendance},
+  { path: '/admin/attendance', name: 'adminattendancepage', component: AdminAttendance},
+  { path: '/user/daily_problem_stat', name: 'user_daily_problem_stat', component: UserDailyProblemStat},
   // ⭐ ADMIN PANEL LAYOUT
   {
     path: '/schoolcrm',
@@ -42,9 +49,12 @@ const routes = [
     children: [
       { path: 'dashboard', name: 'dashboard', component: Dashboard },
       { path: 'users', name: 'userspage', component: UsersPage },
+      { path: 'teachers', name: 'teacherspage', component: TeachersPage },
       { path: 'groups', name: 'groupspage', component: GroupsPage },
       { path: 'group_users/:id', name: 'groupusers', component: GroupUsers },
       { path: 'lessons', name: 'lessons', component: Lessons },
+      { path: 'parents_page', name: 'parents_page', component: ParentsPage },
+      { path: 'parents_status', name: 'parents_status', component: ParentsStatusList },
     ]
   },
 
@@ -69,10 +79,12 @@ router.beforeEach(async (to, from, next) => {
     // Token bo‘lsa login → home
     if (to.name === 'login' && token) {
       try {
-        await axios.get('/api/user/auth/get', {
+        const res = await axios.get('/api/user/auth/get', {
           headers: { Authorization: `Bearer ${token}` }
         });
-        return next({ name: 'home' });
+         const user = res.data;
+         if (user.role_id == 1) return next({ name: 'admin_home' });
+        else return next({ name: 'home' });
       } catch {
         return next();
       }
@@ -84,9 +96,15 @@ router.beforeEach(async (to, from, next) => {
   if (!token) return next({ name: 'login' });
 
   try {
-    await axios.get('/api/user/auth/get', {
+    const res = await axios.get('/api/user/auth/get', {
       headers: { Authorization: `Bearer ${token}` }
     });
+    const user = res.data;
+
+    // Role ga qarab yo‘naltirish
+    if (to.name === 'home' && user.role_id == 1) {
+      return next({ name: 'admin_home' });
+    }
     return next();
   } catch {
     return next({ name: 'login' });

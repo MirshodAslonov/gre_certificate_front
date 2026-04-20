@@ -21,17 +21,17 @@
           </li>
           <li>
             <router-link to="/schoolcrm/users" class="sidebar-btn block text-left">
-              Foydalanuvchilar
+              Talabalar
+            </router-link>
+          </li>
+          <li>
+            <router-link to="/schoolcrm/teachers" class="sidebar-btn block text-left">
+              Ustozlar
             </router-link>
           </li>
           <li>
             <router-link to="/schoolcrm/groups" class="sidebar-btn block text-left">
               Guruhlar
-            </router-link>
-          </li>
-          <li>
-            <router-link to="/schoolcrm/attendance" class="sidebar-btn block text-left">
-              Davomat
             </router-link>
           </li>
           <li>
@@ -45,7 +45,7 @@
             </router-link>
         </li>
         <li>
-            <router-link to="/schoolcrm/hr" class="sidebar-btn block text-left">
+            <router-link to="/schoolcrm/parents_page" class="sidebar-btn block text-left">
               Mijozlar bazasi
             </router-link>
         </li>

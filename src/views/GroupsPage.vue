@@ -13,6 +13,7 @@
           <th class="px-4 py-2">Nomi</th>
           <th class="px-4 py-2">Dars vaqti</th>
           <th class="px-4 py-2">Kunlar</th>
+           <th class="px-4 py-2">Davomat</th>
         </tr>
       </thead>
       <tbody>
@@ -25,6 +26,18 @@
           <td class="px-4 py-2 font-semibold">{{ group.name }}</td>
           <td class="px-4 py-2">{{ group.start_time }} - {{ group.end_time }}</td>
           <td class="px-4 py-2">{{ formatWeekDays(group.week_days) }}</td>
+          <td class="px-4 py-2">
+          <div class="flex items-center justify-center">
+            <button
+              @click.stop="attendance(group.id)"
+              class="px-4 py-2 rounded-xl font-semibold shadow-md transition 
+                    bg-gradient-to-r from-green-400 to-emerald-500 text-white
+                    hover:scale-105 hover:shadow-lg"
+            >
+              Davomat
+            </button>
+          </div>
+        </td>
         </tr>
       </tbody>
     </table>
@@ -63,6 +76,19 @@ const editingId = ref(null)
 
 const weekNames = ['Du', 'Se', 'Ch', 'Pa', 'Ju', 'Sh', 'Ya']
 
+const attendance = async (groupId) => {
+  const token = localStorage.getItem("api_token")
+
+  const { data } = await axios.post(
+    "/api/admin/attendance/get/last/attendance_by_group",
+    { group_id: groupId },
+    { headers: { Authorization: `Bearer ${token}` , Accept: 'application/json' } }
+  )
+  router.push({
+    name: "adminattendancepage",
+    query: { group_id: groupId, group_attendance_id: data.id,date: data.date  }
+  })
+}
 function formatWeekDays(list) {
   if (!list || !Array.isArray(list)) return ''
   return list

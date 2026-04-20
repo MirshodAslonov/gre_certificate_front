@@ -88,7 +88,15 @@
 </div>
 
 
-
+<div
+  v-if="responseMessage"
+  class="mb-4 px-4 py-3 rounded-xl text-sm font-medium transition-all"
+  :class="responseType === 'success'
+    ? 'bg-green-100 text-green-700 border border-green-300'
+    : 'bg-red-100 text-red-700 border border-red-300'"
+>
+  {{ responseMessage }}
+</div>
 
         <!-- Submit -->
         <button
@@ -136,17 +144,24 @@ const router = useRouter()
 const phone = ref("")
 const password = ref("")
 const shake = ref(false)
+const responseMessage = ref("")
+const responseType = ref("") // 'success' | 'error'
 
 const formatPhone = () => {
   phone.value = phone.value.replace(/\D/g, "").slice(0, 12)
 }
 
 const login = async () => {
-  if (!phone.value || !password.value) {
-    shake.value = true
-    setTimeout(() => (shake.value = false), 600)
-    return
-  }
+   responseMessage.value = ""
+    responseType.value = ""
+
+    if (!phone.value || !password.value) {
+       responseMessage.value = "Telefon raqam va parolni to‘liq kiriting"
+        responseType.value = "error"
+      shake.value = true
+      setTimeout(() => (shake.value = false), 600)
+      return
+    }
 
   const backendPhone = phone.value
 
@@ -164,12 +179,22 @@ const login = async () => {
       }
     )
 
-    const { token, user } = response.data
+    const { token, user ,message} = response.data
+ responseMessage.value = message || "Muvaffaqiyatli kirdingiz"
+    responseType.value = "success"
+
     localStorage.setItem('api_token', token)
     localStorage.setItem('user', JSON.stringify(user))
-    router.push({ name: 'home' })
+    
+    if(user.role_id == 1){
+      router.push({ name: 'admin_home' })
+    }else{
+       router.push({ name: 'home' })
+    }
   } catch (error) {
-    console.log(error.response?.data || error)
+     responseMessage.value =
+      error.response?.data?.message || "Login yoki parol noto‘g‘ri"
+    responseType.value = "error"
     shake.value = true
     setTimeout(() => (shake.value = false), 600)
   }

@@ -29,7 +29,14 @@
           📅 Dars jadvali
         </button>
 
-        <button 
+        <button
+          @click="$router.push({ name: 'user_daily_problem_stat' })"
+          class="flex-1 py-3 px-5 rounded-2xl bg-gradient-to-r from-blue-400 via-blue-500 to-blue-400 text-white font-semibold shadow-md hover:scale-105 hover:shadow-lg transition-transform duration-300 flex items-center justify-center gap-2"
+        >
+          📊 Statistika
+        </button>
+
+         <button 
           v-if="user.role?.name === 'teacher'" 
           @click="$router.push({ name: 'teacher_group_attendance' })"
         class="flex-1 py-3 px-4 rounded-2xl bg-gradient-to-r from-green-200 via-green-300 to-green-200 text-gray-800 font-semibold shadow-md hover:scale-105 hover:shadow-lg transition-transform duration-300 flex items-center justify-center gap-2">

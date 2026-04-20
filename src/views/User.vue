@@ -121,11 +121,19 @@
               v-for="sub in subscriptions"
               :key="sub.id"
               :class="[
-                'p-4 rounded-xl shadow-md border transition-all duration-300',
-                Boolean(Number(sub.is_active))
-                  ? 'bg-gradient-to-r from-green-400 to-emerald-500 text-white shadow-emerald-300/40 hover:scale-105'
-                  : 'bg-gray-100 text-gray-700 border-gray-200 hover:bg-gray-200'
-              ]"
+              'p-4 rounded-xl shadow-md border transition-all duration-300',
+
+              // 🔴 MUDDATI O‘TGAN
+              isExpired(sub.expires_at) && Boolean(Number(sub.is_active))
+                ? 'bg-gradient-to-r from-red-400 to-red-600 text-white shadow-red-300/40 hover:scale-105'
+
+              // 🟢 AKTIV
+              : Boolean(Number(sub.is_active))
+                ? 'bg-gradient-to-r from-green-400 to-emerald-500 text-white shadow-emerald-300/40 hover:scale-105'
+
+              // ⚪ ODDIY TUGAGAN (hali sana kelmagan)
+              : 'bg-gray-100 text-gray-700 border-gray-200 hover:bg-gray-200'
+            ]"
             >
               <div class="flex justify-between items-center mb-2">
                 <h3 class="font-semibold text-lg">
@@ -289,7 +297,17 @@ const photoUrl = computed(() => {
     ? `${import.meta.env.VITE_API_BASE_URL}/storage/${user.value.photo}`
     : "/default_person.png"
 })
+const isExpired = (expiresAt) => {
+  if (!expiresAt) return false
 
+  const today = new Date()
+  const expireDate = new Date(expiresAt)
+
+  today.setHours(0, 0, 0, 0)
+  expireDate.setHours(0, 0, 0, 0)
+
+  return expireDate < today
+}
 onMounted(() => {
   loadUser()
   fetchSubscriptions()

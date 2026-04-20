@@ -24,10 +24,11 @@
     <!-- CONTENT -->
     <template v-else>
       <!-- Stats -->
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-6">
+      <div class="grid grid-cols-1 sm:grid-cols-4 gap-6 mb-6">
         <StatCard title="Talabalar soni" :value="stats.students" color="indigo"/>
         <StatCard title="Guruhlar soni" :value="stats.groups" color="purple"/>
-        <StatCard title="Oylik daromad" :value="moneyFormat(stats.revenue)" color="green"/>
+        <StatCard title="Haqiqiy tushum" :value="moneyFormat(stats.revenue)" color="green"/>
+        <StatCard title="Chegirmasiz jami tushum" :value="moneyFormat(stats.active_monthly_amount)" color="gray"/>
       </div>
 
       <!-- Charts -->
@@ -43,7 +44,7 @@
           </div>
         </div>
 
-        <div class="bg-white/80 p-6 rounded-2xl shadow">
+        <div class="bg-white/80 p-6 rounded-2xl shadow ">
           <h2 class="text-xl font-semibold mb-4">Daromad</h2>
           <div class="chart-wrapper">
             <BarChart :chartData="chartIncome" :chartOptions="chartOptions"/>
@@ -82,7 +83,8 @@ const labels = ['Yan','Fev','Mar','Apr','May','Iyun','Iyul','Avg','Sen','Okt','N
 const stats = ref({
   students: 0,
   groups: 0,
-  revenue: 0
+  revenue: 0,
+  active_monthly_amount: 0
 })
 
 const chartIncome = ref({
@@ -96,7 +98,7 @@ const chartStudents = ref({
 })
 
 const chartDataDoughnut = ref({
-  labels: ['Paid', 'Pre-paid', 'Unpaid'],
+  labels: ['To\'langan', 'Qisman to\'langan', 'To\'lanmagan'],
   datasets: [{ data: [], backgroundColor: ['#22c55e','#facc15','#f43f5e'] }]
 })
 
@@ -123,9 +125,12 @@ const loadDashboard = async () => {
 
   const d = res.data
 
-  stats.value.students = d.users_count
-  stats.value.groups = d.group_count
-  stats.value.revenue = Number(d.active_month_paid_amount)
+
+    stats.value.students = d.users_count
+    stats.value.groups = d.group_count
+    stats.value.revenue = Number(d.active_month_paid_amount)
+    stats.value.active_monthly_amount = Number(d.active_monthly_amount)
+
 
   chartIncome.value.datasets[0].data = Object.values(d.yearly_month_paid_amount).map(Number)
   chartStudents.value.datasets[0].data = Object.values(d.yearly_month_users_count)

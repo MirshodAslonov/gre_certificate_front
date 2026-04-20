@@ -31,31 +31,18 @@
       <th class="px-4 py-2 text-left">Familiya</th>
       <th class="px-4 py-2 text-left">Telefon</th>
       <th class="px-4 py-2 text-left">ID</th>
-      <th class="px-4 py-2 text-left">Oylik</th>
+      <th class="px-4 py-2 text-left">Status</th>
       <th class="px-4 py-2 text-left">Harakatlar</th>
     </tr>
   </thead>
   <tbody>
-  <tr
+    <tr
   v-for="(user, index) in users"
   :key="user.id"
-  class="relative border-b cursor-pointer hover:bg-gray-100 transition overflow-hidden"
+  class="border-b cursor-pointer hover:bg-gray-100 transition"
   @click="goToUser(user.id)"
 >
-<td class="relative px-4 py-2 text-left">
-  
-  <!-- Gradient -->
-  <div
-    class="absolute left-0 top-0 h-full w-32 pointer-events-none"
-    :class="getPaymentGradient(user.payment_status)"
-  ></div>
-
-  <!-- Index -->
-  <span class="relative z-10">
-    {{ index + 1 }}
-  </span>
-
-</td>
+<td class="px-4 py-2 text-left">{{ index +1 }}</td>
 <td class="px-4 py-2 text-left">
   <img
   v-if="user.photo"
@@ -69,7 +56,7 @@
 <td class="px-4 py-2 text-left">{{ user.last_name }}</td>
 <td class="px-4 py-2 text-left">{{ user.phone }}</td>
 <td class="px-4 py-2 text-left">{{ user.id }}</td>
-  <td class="px-4 py-2 text-left">{{ user.monthly_amount }}</td>
+  <td class="px-4 py-2 text-left">{{ user.status.name }}</td>
 
   <td class="px-4 py-2 text-left">
     <div class="flex items-center gap-2">
@@ -113,7 +100,6 @@
       <input v-model="form.first_name" placeholder="Ism" class="input-field mb-2" required />
       <input v-model="form.last_name" placeholder="Familiya" class="input-field mb-2" required />
       <input v-model="form.phone" placeholder="Telefon" class="input-field mb-2" required />
-      <input v-model="form.monthly_amount" placeholder="Oylik to'lov summasi" class="input-field mb-2" required />
       <input v-if="!isEdit" v-model="form.password" type="password" placeholder="Parol" class="input-field mb-2" required />
 
       <div class="flex justify-end space-x-2 mt-4">
@@ -179,7 +165,7 @@ async function fetchUsers() {
     const { data } = await axios.post('/api/admin/user/list',
     {
       search: search.value || ''  ,
-      role_id: [3]
+      role_id: [2]
     }, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -192,22 +178,6 @@ async function fetchUsers() {
   }
 }
 
- const getPaymentGradient = (status) => {
-  if (status === 'paid') {
-    return 'bg-gradient-to-r from-green-500/40 to-transparent'
-  }
-
-  if (status === 'unpaid') {
-    return 'bg-gradient-to-r from-red-500/40 to-transparent'
-  }
-
-  if (status === 'partial') {
-    return 'bg-gradient-to-r from-yellow-400/50 to-transparent'
-  }
-
-  return ''
-}
-
 function openAddModal() {
   isEdit.value = false
   form.value = { first_name:'', last_name:'', phone:'', password:'' }
@@ -218,7 +188,7 @@ function openAddModal() {
 function editUser(user) {
   isEdit.value = true
   editingId.value = user.id
-  form.value = { first_name: user.first_name, last_name: user.last_name, phone: user.phone, password:'', monthly_amount: user.monthly_amount }
+  form.value = { first_name: user.first_name, last_name: user.last_name, phone: user.phone, password:'' }
   selectedGroupId.value = user.group_id || ''
   showModal.value = true
 }
