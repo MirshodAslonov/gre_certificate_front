@@ -29,6 +29,7 @@
       <th class="px-4 py-2 text-left w-16">Foto</th>
       <th class="px-4 py-2 text-left">Ism</th>
       <th class="px-4 py-2 text-left">Familiya</th>
+      <th class="px-4 py-2 text-left w-12">Month</th>
       <th class="px-4 py-2 text-left">Telefon</th>
       <th class="px-4 py-2 text-left">ID</th>
       <th class="px-4 py-2 text-left">Oylik</th>
@@ -67,6 +68,13 @@
 </td>
 <td class="px-4 py-2 text-left">{{ user.first_name }}</td>
 <td class="px-4 py-2 text-left">{{ user.last_name }}</td>
+<td class="px-4 py-2 text-left">
+  <span
+    :class="user.paid_this_month ? 'text-green-600 font-bold' : 'text-red-500 font-bold'"
+  >
+    {{ user.paid_this_month ? 'Yes' : 'No' }}
+  </span>
+</td>
 <td class="px-4 py-2 text-left">{{ user.phone }}</td>
 <td class="px-4 py-2 text-left">{{ user.id }}</td>
   <td class="px-4 py-2 text-left">{{ user.monthly_amount }}</td>
